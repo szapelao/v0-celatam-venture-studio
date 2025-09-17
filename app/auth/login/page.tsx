@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,6 +11,12 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { ArrowLeft, Mail, Wallet } from "lucide-react"
+
+declare global {
+  interface Window {
+    ethereum?: any
+  }
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -59,8 +64,59 @@ export default function LoginPage() {
     }
   }
 
-  const handleWalletConnect = async () => {
-    setError("Wallet connection coming soon! Please use email login for now.")
+  const handleWalletConnect = async (walletType: "metamask" | "walletconnect") => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      if (walletType === "metamask") {
+        if (typeof window.ethereum !== "undefined") {
+          const accounts = await window.ethereum.request({
+            method: "eth_requestAccounts",
+          })
+
+          if (accounts.length > 0) {
+            // In a real implementation, you'd verify the wallet signature with Supabase
+            console.log("[v0] Connected to MetaMask:", accounts[0])
+            router.push("/dashboard")
+          }
+        } else {
+          throw new Error("MetaMask is not installed")
+        }
+      } else {
+        // For WalletConnect, you'd typically use their SDK
+        // For now, show a message to install MetaMask or use email
+        throw new Error("Please use MetaMask or sign in with email")
+      }
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "Failed to connect wallet")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Please enter your email address first")
+      return
+    }
+
+    const supabase = createClient()
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      })
+      if (error) throw error
+
+      setError("Password reset email sent! Check your inbox.")
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "An error occurred")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -104,15 +160,27 @@ export default function LoginPage() {
                     <Mail className="mr-2 h-4 w-4" />
                     Continue with Google
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={handleWalletConnect}
-                    disabled={isLoading}
-                    className="w-full bg-transparent"
-                  >
-                    <Wallet className="mr-2 h-4 w-4" />
-                    Connect Wallet
-                  </Button>
+
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => handleWalletConnect("metamask")}
+                      disabled={isLoading}
+                      className="flex-1 bg-transparent"
+                    >
+                      <Wallet className="mr-2 h-4 w-4" />
+                      MetaMask
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => handleWalletConnect("walletconnect")}
+                      disabled={isLoading}
+                      className="flex-1 bg-transparent"
+                    >
+                      <Wallet className="mr-2 h-4 w-4" />
+                      WalletConnect
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="relative mb-6">
@@ -138,7 +206,18 @@ export default function LoginPage() {
                       />
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="password">Password</Label>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="password">Password</Label>
+                        <Button
+                          type="button"
+                          variant="link"
+                          size="sm"
+                          onClick={handleForgotPassword}
+                          className="px-0 font-normal text-xs"
+                        >
+                          Forgot password?
+                        </Button>
+                      </div>
                       <Input
                         id="password"
                         type="password"
