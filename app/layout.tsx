@@ -1,14 +1,20 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { GeistSans } from "geist/font/sans"
-import { GeistMono } from "geist/font/mono"
+import { Manrope } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
+import { Header } from "@/components/header"
 import "./globals.css"
 
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-manrope",
+})
+
 export const metadata: Metadata = {
-  title: "CeLatam Venture Studio",
-  description: "Your fast track to thrive on Celo",
+  title: "CeloBuddy - Your fast track to build and thrive on Celo",
+  description: "Connecting Web3 founders and builders with opportunities and resources on Celo",
   generator: "v0.app",
 }
 
@@ -19,7 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
+      <body className={`${manrope.variable} font-sans antialiased`}>
+        <Header />
         <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
         <Analytics />
       </body>

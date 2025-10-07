@@ -4,79 +4,89 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color tokens to match CeLatam branding with coral, purple, and yellow */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.25 0 0);
-  --card: oklch(0.98 0 0);
-  --card-foreground: oklch(0.25 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.25 0 0);
-  --primary: oklch(0.65 0.15 25); /* Coral #FF6F61 */
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.45 0.2 285); /* Purple #6F42C1 */
-  --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.55 0 0);
-  --accent: oklch(0.8 0.15 85); /* Yellow #FFC107 */
-  --accent-foreground: oklch(0.2 0 0);
+  /* Updated to CeloBuddy color palette */
+  --background: #fafaf5; /* Warm white */
+  --foreground: #222202; /* Off black */
+  --card: #fafaf5;
+  --card-foreground: #222202;
+  --popover: #fafaf5;
+  --popover-foreground: #222202;
+  --primary: #476520; /* Forest green */
+  --primary-foreground: #fafaf5;
+  --secondary: #c8fcaa; /* Mini green */
+  --secondary-foreground: #222202;
+  --muted: #e7e3d4; /* Soft grey for user messages */
+  --muted-foreground: #222202;
+  --accent: #fcff52; /* Prosperity yellow */
+  --accent-foreground: #222202;
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.9 0 0);
-  --input: oklch(1 0 0);
-  --ring: oklch(0.65 0.15 25);
-  --chart-1: oklch(0.65 0.15 25);
-  --chart-2: oklch(0.45 0.2 285);
-  --chart-3: oklch(0.8 0.15 85);
-  --chart-4: oklch(0.7 0.18 340);
-  --chart-5: oklch(0.6 0.15 160);
-  --radius: 0.5rem;
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.25 0 0);
-  --sidebar-primary: oklch(0.65 0.15 25);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.25 0 0);
-  --sidebar-border: oklch(0.9 0 0);
-  --sidebar-ring: oklch(0.65 0.15 25);
+  --destructive-foreground: #fafaf5;
+  --border: #e7e3d4;
+  --input: #fafaf5;
+  --ring: #476520;
+  --chart-1: #476520;
+  --chart-2: #c8fcaa;
+  --chart-3: #fcff52;
+  --chart-4: #222202;
+  --chart-5: #e7e3d4;
+  --radius: 1rem;
+  --sidebar: #fafaf5;
+  --sidebar-foreground: #222202;
+  --sidebar-primary: #476520;
+  --sidebar-primary-foreground: #fafaf5;
+  --sidebar-accent: #e7e3d4;
+  --sidebar-accent-foreground: #222202;
+  --sidebar-border: #e7e3d4;
+  --sidebar-ring: #476520;
+
+  /* CeloBuddy specific colors */
+  --celina-bubble: #c8fcaa; /* Mini green for Celina's messages */
+  --user-bubble: #e7e3d4; /* Soft grey for user messages */
+  --forest-green: #476520;
 }
 
 .dark {
-  --background: oklch(0.1 0 0);
-  --foreground: oklch(0.95 0 0);
-  --card: oklch(0.12 0 0);
-  --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.1 0 0);
-  --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.7 0.15 25);
-  --primary-foreground: oklch(0.1 0 0);
-  --secondary: oklch(0.5 0.2 285);
-  --secondary-foreground: oklch(0.95 0 0);
-  --muted: oklch(0.15 0 0);
-  --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.75 0.15 85);
-  --accent-foreground: oklch(0.1 0 0);
+  --background: #222202;
+  --foreground: #fafaf5;
+  --card: #222202;
+  --card-foreground: #fafaf5;
+  --popover: #222202;
+  --popover-foreground: #fafaf5;
+  --primary: #c8fcaa;
+  --primary-foreground: #222202;
+  --secondary: #476520;
+  --secondary-foreground: #fafaf5;
+  --muted: #e7e3d4;
+  --muted-foreground: #222202;
+  --accent: #fcff52;
+  --accent-foreground: #222202;
   --destructive: oklch(0.5 0.2 25);
-  --destructive-foreground: oklch(0.95 0 0);
-  --border: oklch(0.2 0 0);
-  --input: oklch(0.15 0 0);
-  --ring: oklch(0.7 0.15 25);
-  --chart-1: oklch(0.7 0.15 25);
-  --chart-2: oklch(0.5 0.2 285);
-  --chart-3: oklch(0.75 0.15 85);
-  --chart-4: oklch(0.65 0.18 340);
-  --chart-5: oklch(0.55 0.15 160);
-  --sidebar: oklch(0.08 0 0);
-  --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.7 0.15 25);
-  --sidebar-primary-foreground: oklch(0.1 0 0);
-  --sidebar-accent: oklch(0.15 0 0);
-  --sidebar-accent-foreground: oklch(0.95 0 0);
-  --sidebar-border: oklch(0.2 0 0);
-  --sidebar-ring: oklch(0.7 0.15 25);
+  --destructive-foreground: #fafaf5;
+  --border: #476520;
+  --input: #222202;
+  --ring: #c8fcaa;
+  --chart-1: #c8fcaa;
+  --chart-2: #476520;
+  --chart-3: #fcff52;
+  --chart-4: #e7e3d4;
+  --chart-5: #222202;
+  --sidebar: #222202;
+  --sidebar-foreground: #fafaf5;
+  --sidebar-primary: #c8fcaa;
+  --sidebar-primary-foreground: #222202;
+  --sidebar-accent: #476520;
+  --sidebar-accent-foreground: #fafaf5;
+  --sidebar-border: #476520;
+  --sidebar-ring: #c8fcaa;
+
+  --celina-bubble: #476520;
+  --user-bubble: #e7e3d4;
+  --forest-green: #c8fcaa;
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  /* Updated to use Manrope font */
+  --font-sans: "Manrope", system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -122,5 +132,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-weight: 500; /* Manrope weight 500 for body text */
   }
 }

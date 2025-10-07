@@ -53,6 +53,7 @@ export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
@@ -112,7 +113,23 @@ export default function OnboardingPage() {
   const handleProfileSubmit = async () => {
     if (!user) return
 
+    if (!profileData.full_name || !profileData.company_name || !profileData.company_stage || !profileData.github_url) {
+      setError("Please fill in all required fields")
+      return
+    }
+
+    if (profileData.github_url && !profileData.github_url.includes("github.com")) {
+      setError("Please enter a valid GitHub URL")
+      return
+    }
+
+    if (profileData.karmagap_url && !profileData.karmagap_url.includes("gap.karmahq.xyz")) {
+      setError("Please enter a valid KarmaGap URL")
+      return
+    }
+
     setIsLoading(true)
+    setError(null)
     try {
       const { error } = await supabase.from("profiles").upsert({
         id: user.id,
@@ -123,7 +140,8 @@ export default function OnboardingPage() {
       if (error) throw error
       handleNext()
     } catch (error) {
-      console.error("Error updating profile:", error)
+      console.error("[v0] Error updating profile:", error)
+      setError(error instanceof Error ? error.message : "Failed to save profile")
     } finally {
       setIsLoading(false)
     }
@@ -193,6 +211,7 @@ export default function OnboardingPage() {
               <CardDescription>Help other founders and investors learn about you and your Web3 startup</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              {error && <p className="text-red-500 text-sm">{error}</p>}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="full_name">Full Name *</Label>

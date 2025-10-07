@@ -3,9 +3,11 @@ import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Plus, Bell, Users, Target, Bot } from "lucide-react"
+import { ArrowRight, Plus, Bell, Users, Target, Bot, Building2, Settings } from "lucide-react"
 import Link from "next/link"
 import { SignOutButton } from "@/components/sign-out-button"
+import { LoadingSpinner } from "@/components/loading-spinner"
+import { Suspense } from "react"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -22,6 +24,13 @@ export default async function DashboardPage() {
   if (!profile || !profile.company_name || !profile.company_stage) {
     redirect("/onboarding")
   }
+
+  const { data: projects } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("user_id", data.user.id)
+    .eq("is_active", true)
+    .order("created_at", { ascending: false })
 
   // Get user's needs and recent matches
   const { data: needs } = await supabase
@@ -60,15 +69,15 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-sm">C</span>
             </div>
-            <span className="font-bold text-xl">CeLatam</span>
+            <span className="font-bold text-lg sm:text-xl">CeLatam</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {unreadNotifications > 0 && (
               <Button variant="ghost" size="sm" className="relative">
                 <Bell className="h-4 w-4" />
@@ -77,7 +86,7 @@ export default async function DashboardPage() {
                 </span>
               </Button>
             )}
-            <Button variant="ghost" size="sm" asChild>
+            <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
               <Link href="/profile">Profile</Link>
             </Button>
             <SignOutButton />
@@ -85,65 +94,168 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-4 py-6 sm:py-8 max-w-6xl">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Hello, {profile.full_name || "Founder"}!</h1>
-          <p className="text-muted-foreground">Here's what's happening with your Web3 journey on Celo</p>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Hello, {profile.full_name || "Founder"}!</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Here's what's happening with your Web3 journey on Celo
+          </p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <Target className="h-5 w-5 text-primary" />
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-chart-4/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-chart-4" />
                 </div>
-                <div>
-                  <p className="text-2xl font-bold">{allNeeds?.length || 0}</p>
-                  <p className="text-xs text-muted-foreground">Active Needs</p>
+                <div className="min-w-0">
+                  <p className="text-xl sm:text-2xl font-bold">{projects?.length || 0}</p>
+                  <p className="text-xs text-muted-foreground truncate">Active Projects</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center">
-                  <Users className="h-5 w-5 text-secondary" />
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Target className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 </div>
-                <div>
-                  <p className="text-2xl font-bold">{allMatches?.length || 0}</p>
-                  <p className="text-xs text-muted-foreground">Total Matches</p>
+                <div className="min-w-0">
+                  <p className="text-xl sm:text-2xl font-bold">{allNeeds?.length || 0}</p>
+                  <p className="text-xs text-muted-foreground truncate">Active Needs</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-chart-5/10 rounded-lg flex items-center justify-center">
-                  <Users className="h-5 w-5 text-chart-5" />
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-secondary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 text-secondary" />
                 </div>
-                <div>
-                  <p className="text-2xl font-bold">{acceptedMatches}</p>
-                  <p className="text-xs text-muted-foreground">Connected</p>
+                <div className="min-w-0">
+                  <p className="text-xl sm:text-2xl font-bold">{allMatches?.length || 0}</p>
+                  <p className="text-xs text-muted-foreground truncate">Total Matches</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-chart-5/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 text-chart-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xl sm:text-2xl font-bold">{acceptedMatches}</p>
+                  <p className="text-xs text-muted-foreground truncate">Connected</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Quick Actions */}
-          <div className="lg:col-span-2 space-y-6">
+        <div className="grid lg:grid-cols-3 gap-6 sm:gap-6">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+            <Suspense fallback={<LoadingSpinner text="Loading projects..." />}>
+              <Card>
+                <CardHeader>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <CardTitle className="text-lg sm:text-xl">Your Projects</CardTitle>
+                      <CardDescription className="text-sm">Manage your Web3 projects and their needs</CardDescription>
+                    </div>
+                    <Button asChild size="sm">
+                      <Link href="/projects/new">
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Project
+                      </Link>
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {projects && projects.length > 0 ? (
+                    <div className="space-y-3 sm:space-y-4">
+                      {projects.map((project) => (
+                        <div
+                          key={project.id}
+                          className="p-3 sm:p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex flex-wrap items-center gap-2 mb-2">
+                                <h4 className="font-semibold truncate text-sm sm:text-base">{project.name}</h4>
+                                <Badge variant="outline" className="text-xs capitalize">
+                                  {project.stage}
+                                </Badge>
+                                {project.industry && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    {project.industry}
+                                  </Badge>
+                                )}
+                              </div>
+                              <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mb-3">
+                                {project.description}
+                              </p>
+                              <div className="flex flex-wrap items-center gap-2">
+                                {project.website_url && (
+                                  <Button variant="ghost" size="sm" asChild>
+                                    <Link href={project.website_url} target="_blank" rel="noopener noreferrer">
+                                      Website
+                                    </Link>
+                                  </Button>
+                                )}
+                                <Button variant="ghost" size="sm" asChild>
+                                  <Link href={`/projects/${project.id}`}>View Details</Link>
+                                </Button>
+                              </div>
+                            </div>
+                            <Button variant="ghost" size="sm" asChild className="flex-shrink-0">
+                              <Link href={`/projects/${project.id}/edit`}>
+                                <Settings className="h-4 w-4" />
+                              </Link>
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-sm sm:text-base text-muted-foreground mb-4">
+                        You haven't added any projects yet
+                      </p>
+                      <Button asChild>
+                        <Link href="/projects/new">Add Your First Project</Link>
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </Suspense>
+
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Get started with finding what you need in the Celo ecosystem</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Quick Actions</CardTitle>
+                    <CardDescription>Get started with finding what you need in the Celo ecosystem</CardDescription>
+                  </div>
+                  <Button asChild>
+                    <Link href="/needs/new">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add New Need
+                    </Link>
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="grid sm:grid-cols-2 gap-4">
                 <Button asChild className="h-auto p-4 flex-col gap-2">
@@ -185,7 +297,6 @@ export default async function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Recent Needs */}
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
