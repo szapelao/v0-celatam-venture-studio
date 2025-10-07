@@ -115,7 +115,7 @@ export default function SetupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <div className="min-h-screen bg-background p-4 md:p-8 pb-20">
       <div className="mx-auto max-w-3xl">
         <Card className="border-forest-green/20">
           <CardHeader className="space-y-1 bg-forest-green/5">
@@ -124,7 +124,7 @@ export default function SetupPage() {
               Quick setup form to add opportunities to CeloBuddy
             </CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="pt-6 pb-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Title */}
               <div className="space-y-2">
@@ -317,13 +317,15 @@ export default function SetupPage() {
               )}
 
               {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-forest-green hover:bg-forest-green/90 text-white font-medium"
-              >
-                {loading ? "Creating..." : "Create Opportunity"}
-              </Button>
+              <div className="pt-4">
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-forest-green hover:bg-forest-green/90 text-white font-semibold py-6 text-lg"
+                >
+                  {loading ? "Creating Opportunity..." : "Create Opportunity"}
+                </Button>
+              </div>
             </form>
           </CardContent>
         </Card>
